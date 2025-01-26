@@ -33,7 +33,9 @@ options.completeopt = "menuone,noselect"
 
 options.swapfile = false
 options.autoread = true
-options.undofile = false
+
+-- Enable the ability to undo even after restarting Neovim
+options.undofile = true
 
 -- Change cursor color
 -- options.guicursor = "n-v-c:block-Cursor/lCursor"
