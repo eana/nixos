@@ -21,7 +21,7 @@ let
   swaymsg = "${pkgs.sway}/bin/swaymsg";
   swaynag = "${pkgs.sway}/bin/swaynag";
   tesseract = "${pkgs.tesseract}/bin/tesseract";
-  waybar = "${pkgs.waybar}/bin/waybar";
+  waybar_command = "systemctl start --user ${pkgs.waybar.pname}.service";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
 
   modifier = "Mod4"; # Mod1=<Alt>, Mod4=<Super>
@@ -378,7 +378,7 @@ in
     ### Status bar ###
 
     bar {
-      swaybar_command ${waybar}
+      swaybar_command ${waybar_command}
     }
 
     include /etc/sway/config.d/*
