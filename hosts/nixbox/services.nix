@@ -24,22 +24,19 @@
     defaultSession = "sway";
   };
 
-  xserver = {
-    enable = true;
-    displayManager = {
-      gdm = {
-        enable = true;
-        wayland = true;
-        settings = {
-          greeter = {
-            IncludeAll = true;
-          };
+  displayManager = {
+    gdm = {
+      enable = true;
+      wayland = true;
+      settings = {
+        greeter = {
+          IncludeAll = true;
         };
       };
     };
-    desktopManager.gnome.enable = true;
-    videoDrivers = [ "nvidia" ];
   };
+
+  desktopManager.gnome.enable = true;
 
   printing = {
     enable = true;

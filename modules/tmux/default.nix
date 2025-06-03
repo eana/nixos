@@ -1,25 +1,19 @@
-{ pkgs }:
-let
-  wl-paste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
-in
 {
-  # General Settings
-  enable = true;
-  shortcut = "a";
-  baseIndex = 1;
-  clock24 = true;
-  escapeTime = 0;
-  secureSocket = false;
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
-  # History and Terminal Settings**
-  historyLimit = 999999999;
+let
+  inherit (lib) mkEnableOption mkOption types;
 
-  # Key Mode and Plugin Configuration**
-  keyMode = "vi";
+  cfg = config.module.tmux;
+  tmuxPkg = import ./package.nix { inherit lib pkgs; };
 
-  plugins = with pkgs; [ tmuxPlugins.resurrect ];
+  defaultWlPaste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
 
-  extraConfig = ''
+  defaultExtraConfig = ''
     # Mouse
     bind-key m set-option -g mouse on \; display 'Mouse: ON'
     bind-key M set-option -g mouse off \; display 'Mouse: OFF'
@@ -27,7 +21,7 @@ in
     bind-key -T copy-mode-vi 'v' send -X begin-selection     # Begin selection in copy mode.
     bind-key -T copy-mode-vi 'C-v' send -X rectangle-toggle  # Begin selection in copy mode.
     # Yank selection in copy mode.
-    bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{#if (eq os "windows-wsl")}}clip.exe{{else}}${wl-paste}{{/if}}'
+    bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{#if (eq os "windows-wsl")}}clip.exe{{else}}${defaultWlPaste}{{/if}}'
 
     # Restoring pane contents
     set -g @resurrect-capture-pane-contents 'on'
@@ -125,4 +119,94 @@ in
     bind-key -n Home send Escape "[1~"
     bind-key -n End send Escape "[4~"
   '';
+
+in
+{
+  options.module.tmux = {
+    enable = mkEnableOption "tmux terminal multiplexer";
+
+    package = mkOption {
+      type = types.package;
+      default = tmuxPkg;
+      description = "Customized tmux package";
+    };
+
+    shortcut = mkOption {
+      type = types.str;
+      default = "a";
+      description = "Base shortcut key for tmux commands";
+    };
+
+    baseIndex = mkOption {
+      type = types.int;
+      default = 1;
+      description = "Base index for windows and panes";
+    };
+
+    clock24 = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to use 24-hour clock";
+    };
+
+    escapeTime = mkOption {
+      type = types.int;
+      default = 0;
+      description = "Time in milliseconds for which tmux waits after an escape is input";
+    };
+
+    secureSocket = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to use secure socket";
+    };
+
+    historyLimit = mkOption {
+      type = types.int;
+      default = 999999999;
+      description = "Maximum number of lines kept in history";
+    };
+
+    keyMode = mkOption {
+      type = types.str;
+      default = "vi";
+      description = "Key binding mode (vi or emacs)";
+    };
+
+    plugins = mkOption {
+      type = types.listOf types.package;
+      default = [ pkgs.tmuxPlugins.resurrect ];
+      description = "List of tmux plugins to install";
+    };
+
+    extraConfig = mkOption {
+      type = types.lines;
+      default = defaultExtraConfig;
+      description = "Additional tmux configuration";
+    };
+
+    wlPaste = mkOption {
+      type = types.str;
+      default = defaultWlPaste;
+      description = "Path to wl-paste binary for Wayland clipboard integration";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    programs.tmux = {
+      enable = true;
+      inherit (cfg)
+        package
+        shortcut
+        baseIndex
+        clock24
+        escapeTime
+        secureSocket
+        historyLimit
+        keyMode
+        plugins
+        extraConfig
+        ;
+    };
+  };
 }

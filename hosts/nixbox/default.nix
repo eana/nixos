@@ -11,9 +11,10 @@ let
 in
 {
   imports = [
-    ./linux/hardware-configuration.nix
-    ./linux/disko.nix
-    ./linux/gdm.nix
+    ./disko.nix
+    ./gdm.nix
+    ./hardware-configuration.nix
+    ./nvidia.nix
   ];
 
   nix = {
@@ -23,6 +24,8 @@ in
     '';
   };
 
+  hardware.nvidiaPrime.enable = true;
+
   hardware = {
     bluetooth = {
       enable = true;
@@ -30,22 +33,9 @@ in
     };
     enableAllFirmware = true;
     graphics.enable = true;
-    nvidia = {
-      open = false;
-      prime = {
-        # ❯ nix-shell -p pciutils --run "lspci -nn | grep -E 'VGA|3D'"
-        # 00:02.0 VGA compatible controller [0300]: Intel Corporation HD Graphics 530 [8086:191b] (rev 06)
-        # 01:00.0 3D controller [0302]: NVIDIA Corporation GM107GLM [Quadro M1000M] [10de:13b1] (rev a2)
-        nvidiaBusId = "PCI:1:0:0";
-        intelBusId = "PCI:0:2:0";
-      };
-      modesetting.enable = false;
-    };
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-
     # I spotted this in the logs:
     # Jan 15 16:48:17 nixbox kernel: snd_soc_avs 0000:00:1f.3: Direct firmware load for intel/avs/hda-10ec0298-tplg.bin failed with error -2
     # Jan 15 16:48:17 nixbox kernel: snd_soc_avs 0000:00:1f.3: request topology "intel/avs/hda-10ec0298-tplg.bin" failed: -2
@@ -93,30 +83,28 @@ in
       dispatcherScripts = [
         {
           type = "basic";
-          source =
-            pkgs.writeText "wifi-wired-exclusive" # bash
-              ''
-                export LC_ALL=C
-                PATH=${lib.makeBinPath [ pkgs.networkmanager ]}:$PATH
+          source = pkgs.writeText "wifi-wired-exclusive" ''
+            export LC_ALL=C
+            PATH=${lib.makeBinPath [ pkgs.networkmanager ]}:$PATH
 
-                enable_disable_wifi ()
-                {
-                    result=$(nmcli dev | grep "ethernet" | grep -w "connected")
-                    if [ -n "$result" ]; then
-                        nmcli radio wifi off
-                    else
-                        nmcli radio wifi on
-                    fi
-                }
-
-                if [ "$2" = "up" ]; then
-                    enable_disable_wifi
+            enable_disable_wifi ()
+            {
+                result=$(nmcli dev | grep "ethernet" | grep -w "connected")
+                if [ -n "$result" ]; then
+                    nmcli radio wifi off
+                else
+                    nmcli radio wifi on
                 fi
+            }
 
-                if [ "$2" = "down" ]; then
-                    enable_disable_wifi
-                fi
-              '';
+            if [ "$2" = "up" ]; then
+                enable_disable_wifi
+            fi
+
+            if [ "$2" = "down" ]; then
+                enable_disable_wifi
+            fi
+          '';
         }
       ];
     };
@@ -131,7 +119,7 @@ in
   };
 
   security.rtkit.enable = true;
-  services = import ./linux/services.nix { inherit pkgs; };
+  services = import ./services.nix { inherit pkgs; };
 
   fonts = {
     enableDefaultPackages = true;
@@ -171,13 +159,6 @@ in
 
   environment = {
     systemPackages = with pkgs; [
-      # Browsers
-      firefox # A free and open-source web browser developed by Mozilla
-      google-chrome # A fast, secure, and free web browser built for the modern web by Google
-
-      # Terminal Emulators
-      foot # A fast, lightweight and minimalistic Wayland terminal emulator
-
       # Utilities
       blueman # A GTK+ Bluetooth manager
       curl # A command-line tool for transferring data with URLs

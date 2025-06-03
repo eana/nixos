@@ -25,18 +25,9 @@ let
   };
 in
 {
-  systemd.user = import ./base/systemd.nix { inherit pkgs; };
+  systemd.user = import ../../../base/systemd.nix { inherit pkgs; };
 
   programs = {
-    foot = import ./base/programs/foot.nix;
-    fuzzel = import ./base/programs/fuzzel.nix;
-    git = import ./base/programs/git.nix;
-    neovim = import ./base/programs/neovim.nix;
-    swaylock = import ./base/programs/swaylock.nix;
-    tmux = import ./base/programs/tmux.nix { inherit pkgs; };
-    waybar = import ./base/programs/waybar.nix { inherit pkgs; };
-    zsh = import ./base/programs/zsh.nix { inherit pkgs; };
-
     zellij = {
       enable = true;
     };
@@ -47,14 +38,12 @@ in
     };
   };
 
-  wayland.windowManager.sway = import ./base/programs/sway.nix { inherit pkgs; };
-
   services = {
-    avizo = import ./base/services/avizo.nix;
-    gpg-agent = import ./base/services/gpg-agent.nix { inherit pkgs; };
-    gammastep = import ./base/services/gammastep.nix;
-    kanshi = import ./base/services/kanshi.nix { inherit pkgs; };
-    ollama = import ./base/services/ollama.nix;
+    avizo = import ../../../base/services/avizo.nix;
+    gpg-agent = import ../../../base/services/gpg-agent.nix { inherit pkgs; };
+    gammastep = import ../../../base/services/gammastep.nix;
+    kanshi = import ../../../base/services/kanshi.nix { inherit pkgs; };
+    ollama = import ../../../base/services/ollama.nix;
   };
 
   dconf = {
@@ -171,6 +160,7 @@ in
       blueman # Bluetooth manager
       copyq # Clipboard manager
       earlyoom # Early OOM daemon
+      firefox # Web browser
       google-chrome # Web browser
       brightnessctl # Utility to control brightness
       pavucontrol # PulseAudio volume control
@@ -191,22 +181,6 @@ in
       rofi-rbw-wayland # Bitwarden integration for Rofi
     ];
 
-    file = {
-      ".config" = {
-        source = ./assets/.config;
-        recursive = true;
-      };
-
-      ".local" = {
-        source = ./assets/.local;
-        recursive = true;
-      };
-
-      ".p10k.zsh" = {
-        source = ./assets/.p10k.zsh;
-      };
-    };
-
     sessionVariables = {
       LIBGL_ALWAYS_INDIRECT = 1;
       LESS = "-iXFR";
@@ -217,30 +191,51 @@ in
     inherit (nixosConfig.system) stateVersion;
   };
 
-  module.mhalo = {
-    enable = true;
-    swayKeybinding = "Mod4+Shift+m";
-  };
-
-  module.openra = {
-    enable = true;
-    release = "release-20250330";
-    variants = {
-      "red-alert" = {
-        enable = true;
-        appimageSha256 = "sha256-PLccdCgYjIUm3YkWmT/Bb6F7pfKKNZaKgmfz258hhv4=";
-        iconSha256 = "sha256-6IadsH5NGKXZ3gye3JYVTCDC/uPwy3BRXhuAp5+10qA=";
-      };
-      "dune" = {
-        enable = true;
-        appimageSha256 = "sha256-dYWYa/DNSI3rrsP634U8GQEAPv+UXbrV3pWwtr14Gmc=";
-        iconSha256 = "sha256-vpXer6ZhUWr3RUmNNY8gvxIFMjZRa/E9jGSjNziMysQ=";
-      };
-      "tiberian-dawn" = {
-        enable = true;
-        appimageSha256 = "sha256-s9IC0b9wG+WYnEHCVtGb0rF4hpTfAeNDrehlzxGQcGs=";
-        iconSha256 = "sha256-vpXer6ZhUWr3RUmNNY8gvxIFMjZRa/E9jGSjNziMysQ=";
+  module = {
+    foot.enable = true;
+    fuzzel = {
+      enable = true;
+      settings = {
+        main = {
+          font = "Fira Code:size=12";
+          dpi-aware = "no";
+        };
       };
     };
+    git.enable = true;
+    mhalo = {
+      enable = true;
+      swayKeybinding = "Mod4+Shift+m";
+    };
+    neovim.enable = true;
+    openra = {
+      enable = true;
+      release = "release-20250330";
+      variants = {
+        "red-alert" = {
+          enable = true;
+          appimageSha256 = "sha256-PLccdCgYjIUm3YkWmT/Bb6F7pfKKNZaKgmfz258hhv4=";
+          iconSha256 = "sha256-6IadsH5NGKXZ3gye3JYVTCDC/uPwy3BRXhuAp5+10qA=";
+        };
+        "dune" = {
+          enable = true;
+          appimageSha256 = "sha256-dYWYa/DNSI3rrsP634U8GQEAPv+UXbrV3pWwtr14Gmc=";
+          iconSha256 = "sha256-vpXer6ZhUWr3RUmNNY8gvxIFMjZRa/E9jGSjNziMysQ=";
+        };
+        "tiberian-dawn" = {
+          enable = true;
+          appimageSha256 = "sha256-s9IC0b9wG+WYnEHCVtGb0rF4hpTfAeNDrehlzxGQcGs=";
+          iconSha256 = "sha256-vpXer6ZhUWr3RUmNNY8gvxIFMjZRa/E9jGSjNziMysQ=";
+        };
+      };
+    };
+    sway.enable = true;
+    swaylock.enable = true;
+    tmux.enable = true;
+    waybar = {
+      enable = true;
+      systemdIntegration = false;
+    };
+    zsh.enable = true;
   };
 }
