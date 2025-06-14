@@ -192,7 +192,10 @@ in
   };
 
   module = {
-    foot.enable = true;
+    foot = {
+      enable = true;
+      font.size = 10;
+    };
     fuzzel = {
       enable = true;
       settings = {
