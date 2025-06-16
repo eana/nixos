@@ -1,9 +1,11 @@
 {
-  description = "Nix flake configuration";
+  description = "Nix flake configuration for NixOS and macOS";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
+    darwin.url = "github:LnL7/nix-darwin";
+    darwin.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
 
     flake-parts = {
@@ -19,12 +21,21 @@
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
+    inputs@{
+      flake-parts,
+      darwin,
+      home-manager,
+      ...
+    }:
     let
       nixbox-arch = "x86_64-linux";
+      macbox-arch = "aarch64-darwin";
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ nixbox-arch ];
+      systems = [
+        nixbox-arch
+        macbox-arch
+      ];
 
       imports = [ inputs.dev-flake.flakeModule ];
 
@@ -55,8 +66,12 @@
         };
 
       flake = {
-        formatter.x86_64-linux = inputs.nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
+        formatter = {
+          ${nixbox-arch} = inputs.nixpkgs.legacyPackages.${nixbox-arch}.nixfmt-rfc-style;
+          ${macbox-arch} = inputs.nixpkgs.legacyPackages.${macbox-arch}.nixfmt-rfc-style;
+        };
 
+        # NixOS configuration
         nixosConfigurations.nixbox = inputs.nixpkgs.lib.nixosSystem {
           system = nixbox-arch;
           modules = [
@@ -69,24 +84,52 @@
                 useUserPackages = true;
                 users.jonas = {
                   imports = [
-                    ./home/users/jonas/default.nix
+                    ./home/users/jonas/linux.nix
 
                     # Linux-specific modules
-                    ./modules/avizo/default.nix
-                    ./modules/foot/default.nix
-                    ./modules/fuzzel/default.nix
-                    ./modules/gammastep/default.nix
-                    ./modules/git/default.nix
-                    ./modules/gpg-agent/default.nix
-                    ./modules/kanshi/default.nix
-                    ./modules/mhalo/default.nix
-                    ./modules/neovim/default.nix
-                    ./modules/ollama/default.nix
-                    ./modules/openra/default.nix
-                    ./modules/sway/default.nix
-                    ./modules/tmux/default.nix
-                    ./modules/waybar/default.nix
-                    ./modules/zsh/default.nix
+                    ./modules/common/git/default.nix
+                    ./modules/common/gpg-agent/default.nix
+                    ./modules/common/neovim/default.nix
+                    ./modules/common/ollama/default.nix
+                    ./modules/common/tmux/default.nix
+                    ./modules/common/zsh/default.nix
+                    ./modules/linux/avizo/default.nix
+                    ./modules/linux/foot/default.nix
+                    ./modules/linux/fuzzel/default.nix
+                    ./modules/linux/gammastep/default.nix
+                    ./modules/linux/kanshi/default.nix
+                    ./modules/linux/mhalo/default.nix
+                    ./modules/linux/openra/default.nix
+                    ./modules/linux/sway/default.nix
+                    ./modules/linux/waybar/default.nix
+                  ];
+                };
+              };
+            }
+          ];
+        };
+
+        # macOS configuration
+        darwinConfigurations.macbox = darwin.lib.darwinSystem {
+          system = macbox-arch;
+          modules = [
+            ./hosts/macbox/default.nix
+            home-manager.darwinModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.jonas = {
+                  imports = [
+                    ./home/users/jonas/darwin.nix
+
+                    # macOS-compatible modules
+                    ./modules/common/git/default.nix
+                    ./modules/common/gpg-agent/default.nix
+                    ./modules/common/neovim/default.nix
+                    ./modules/common/ollama/default.nix
+                    ./modules/common/tmux/default.nix
+                    ./modules/common/zsh/default.nix
                   ];
                 };
               };
@@ -97,7 +140,13 @@
     };
 
   nixConfig = {
-    extra-substituters = "https://cuda-maintainers.cachix.org";
-    extra-trusted-public-keys = "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=";
+    extra-substituters = [
+      "https://cuda-maintainers.cachix.org"
+      "https://nix-community.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
   };
 }

@@ -11,8 +11,8 @@ let
   cfg = config.module.sway;
   swayPkg = import ./package.nix { inherit lib pkgs; };
 
-  backgroundsDir = ../../assets/.local/share/backgrounds;
-  mimeAppsFile = ../../assets/.config/mimeapps.list;
+  backgroundsDir = ../../../assets/.local/share/backgrounds;
+  mimeAppsFile = ../../../assets/.config/mimeapps.list;
 
   defaultBackground = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
   defaultModifier = "Mod4";

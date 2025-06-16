@@ -1,5 +1,4 @@
 {
-  nixosConfig,
   pkgs,
   ...
 }:
@@ -25,12 +24,65 @@ let
   };
 in
 {
-  systemd.user = import ./systemd.nix { inherit pkgs; };
+  imports = [ ./common.nix ];
 
-  programs = {
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
+  systemd.user = {
+    startServices = "sd-switch";
+
+    services = {
+      copyq = {
+        Unit = {
+          Description = "CopyQ clipboard management daemon";
+          PartOf = [ "graphical-session.target" ];
+          After = [ "graphical-session.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.copyq}/bin/copyq";
+          Restart = "on-failure";
+          Environment = [ "QT_QPA_PLATFORM=xcb" ];
+        };
+        Install.WantedBy = [ "sway-session.target" ];
+      };
+
+      telegram = {
+        Unit = {
+          Description = "Telegram Desktop";
+          PartOf = [ "graphical-session.target" ];
+          After = [ "graphical-session.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.telegram-desktop}/bin/telegram-desktop -startintray";
+          Restart = "on-failure";
+          Environment = [ "QT_QPA_PLATFORM=xcb" ];
+        };
+        Install.WantedBy = [ "sway-session.target" ];
+      };
+
+      bluetooth-applet = {
+        Unit = {
+          Description = "Blueman Applet";
+          PartOf = [ "graphical-session.target" ];
+          After = [ "graphical-session.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.blueman}/bin/blueman-applet";
+          Restart = "on-failure";
+        };
+        Install.WantedBy = [ "sway-session.target" ];
+      };
+
+      swaynag-battery = {
+        Unit = {
+          Description = "Low battery notification";
+          PartOf = [ "graphical-session.target" ];
+          After = [ "graphical-session.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.swaynag-battery}/bin/swaynag-battery";
+          Restart = "on-failure";
+        };
+        Install.WantedBy = [ "sway-session.target" ];
+      };
     };
   };
 
@@ -70,47 +122,19 @@ in
 
       # File Management
       gthumb # Image browser and viewer
-      wget # Download utility
-      axel # Download utility
-      unzip # Unzip utility
-      tree # Directory tree viewer
-      fd # File search utility
-      lsof # List open files
       nautilus # File manager
-
-      # Media
-      mpg123 # Audio player
-      mpv # Video player
-      freetube # YouTube client
 
       # Development Tools
       nil # Nix language server
-      nixfmt-rfc-style # Nix code formatter
       nix-tree # Visualize Nix dependencies
       meld # Visual diff and merge tool
       gnumake # Build automation tool
       gcc # GNU Compiler Collection
       tree-sitter # Incremental parsing system
-      fzf # Fuzzy finder
-      # go # Go programming language
-      # gotools # Tools for Go programming
-      ripgrep # Search tool
-      # nix-prefetch-git # Prefetch Git repositories
-      pre-commit # Framework for managing pre-commit hooks
-      # terraform # Infrastructure as code tool
-      # terraform-docs # Terraform documentation generator
+      go # Go programming language
+      gotools # Tools for Go programming
+      nix-prefetch-git # Prefetch Git repositories
       aws-export-profile # AWS profile exporter
-
-      # Version Control
-      tig # Text-mode interface for Git
-      git-absorb # Automatically fixup commits
-      lazygit # Simple terminal UI for Git commands
-
-      # File and Text Manipulation
-      glow # Markdown renderer for the terminal
-      jaq # JSON processor
-      xh # Friendly and fast HTTP client
-      jq # Command-line JSON processor
 
       # Language Servers and Linters
       bash-language-server # Language server for Bash
@@ -127,15 +151,6 @@ in
       yaml-language-server # Language server for YAML
       yamlfmt # YAML formatter
 
-      # Programming Languages and Runtimes
-      python3 # Python programming language
-      lua # Lua programming language
-      luajitPackages.luarocks # Package manager for Lua modules
-      nodejs_22 # JavaScript runtime
-
-      # Diagramming Tools
-      d2 # Modern diagram scripting language
-
       # Containers
       podman # Tool for managing OCI containers
 
@@ -143,23 +158,16 @@ in
       cantarell-fonts # Cantarell font family
 
       # Other
-      neofetch # System information tool
-      sops # Secrets management tool
       blueman # Bluetooth manager
       copyq # Clipboard manager
       earlyoom # Early OOM daemon
-      firefox # Web browser
-      google-chrome # Web browser
       brightnessctl # Utility to control brightness
       pavucontrol # PulseAudio volume control
       playerctl # Media player controller
       system-config-printer # Printer configuration tool
-      telegram-desktop # Telegram client
       fuse-emulator # ZX Spectrum emulator
       oath-toolkit # OATH one-time password tool
       awscli2 # AWS command-line interface
-      protonvpn-cli_2 # ProtonVPN command-line interface
-      direnv # Environment switcher
       aider-chat # AI-powered code review tool
 
       # Bitwarden
@@ -171,12 +179,9 @@ in
 
     sessionVariables = {
       LIBGL_ALWAYS_INDIRECT = 1;
-      LESS = "-iXFR";
       DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
       KPT_FN_RUNTIME = "podman";
     };
-
-    inherit (nixosConfig.system) stateVersion;
   };
 
   module = {
@@ -195,15 +200,11 @@ in
       };
     };
     gammastep.enable = true;
-    git.enable = true;
-    gpg-agent.enable = true;
     kanshi.enable = true;
     mhalo = {
       enable = true;
       swayKeybinding = "Mod4+Shift+m";
     };
-    neovim.enable = true;
-    ollama.enable = true;
     openra = {
       enable = true;
       release = "release-20250330";
@@ -230,11 +231,9 @@ in
       background = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
       swaylock.enable = true;
     };
-    tmux.enable = true;
     waybar = {
       enable = true;
       systemdIntegration = false;
     };
-    zsh.enable = true;
   };
 }

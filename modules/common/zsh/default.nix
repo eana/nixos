@@ -11,7 +11,7 @@ let
   cfg = config.module.zsh;
   zshPkg = import ./package.nix { inherit lib pkgs; };
 
-  p10kConfig = ../../assets/.p10k.zsh;
+  p10kConfig = ../../../assets/.p10k.zsh;
 
   defaultOhMyZshExtraConfig = ''
     # ZSH_TMUX_AUTOSTART=true
