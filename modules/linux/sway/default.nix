@@ -222,11 +222,6 @@ let
     bindswitch lid:on output eDP-1 disable
     bindswitch lid:off output eDP-1 enable
 
-    ### Status bar ###
-    bar {
-      swaybar_command ${pkgs.waybar}/bin/waybar
-    }
-
     include /etc/sway/config.d/*
 
     ### Autostart ###

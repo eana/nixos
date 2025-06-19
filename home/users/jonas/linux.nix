@@ -89,9 +89,9 @@ in
   dconf = {
     settings = {
       "org/gnome/desktop/interface" = {
-        font-name = "Helvetica Neue LT Std 11";
-        monospace-font-name = "Source Code Pro 12";
-        document-font-name = "Cantarell 12";
+        font-name = "Helvetica Neue LT Std 13";
+        monospace-font-name = "Source Code Pro 13";
+        document-font-name = "Cantarell 13";
       };
     };
   };
@@ -194,7 +194,7 @@ in
       enable = true;
       settings = {
         main = {
-          font = "Fira Code:size=12";
+          font = "Fira Code:size=13";
           dpi-aware = "no";
         };
       };
@@ -231,9 +231,6 @@ in
       background = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
       swaylock.enable = true;
     };
-    waybar = {
-      enable = true;
-      systemdIntegration = false;
-    };
+    waybar.enable = true;
   };
 }
