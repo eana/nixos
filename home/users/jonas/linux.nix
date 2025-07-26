@@ -89,9 +89,9 @@ in
   dconf = {
     settings = {
       "org/gnome/desktop/interface" = {
-        font-name = "Helvetica Neue LT Std 13";
-        monospace-font-name = "Source Code Pro 13";
-        document-font-name = "Cantarell 13";
+        font-name = "Helvetica Neue LT Std";
+        monospace-font-name = "Source Code Pro";
+        document-font-name = "Cantarell";
       };
     };
   };
@@ -147,17 +147,8 @@ in
     avizo.enable = true;
     foot = {
       enable = true;
-      font.size = 10;
     };
-    fuzzel = {
-      enable = true;
-      settings = {
-        main = {
-          font = "Fira Code:size=13";
-          dpi-aware = "no";
-        };
-      };
-    };
+    fuzzel.enable = true;
     gammastep.enable = true;
     kanshi.enable = true;
     mhalo = {

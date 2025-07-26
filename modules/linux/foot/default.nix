@@ -11,15 +11,14 @@ let
   cfg = config.module.foot;
 
   defaultFontFamily = "MesloLGS NF";
-  defaultFontSize = 9;
   defaultDpiAware = true;
 
-  mkFontString = family: size: "${family}:size=${toString size}";
+  mkFontString = family: "${family}";
 
   defaultSettings = {
     main = {
       term = "xterm-256color";
-      font = mkFontString cfg.font.family cfg.font.size;
+      font = mkFontString cfg.font.family;
       dpi-aware = if cfg.dpiAware then "yes" else "no";
     };
     colors = {
@@ -66,12 +65,6 @@ in
         default = defaultFontFamily;
         description = "Font family for Foot terminal";
       };
-
-      size = mkOption {
-        type = types.ints.positive;
-        default = defaultFontSize;
-        description = "Font size for Foot terminal";
-      };
     };
 
     dpiAware = mkOption {
@@ -96,7 +89,7 @@ in
           (defaultSettings.main or { })
           // (cfg.settings.main or { })
           // {
-            font = mkFontString cfg.font.family cfg.font.size;
+            font = mkFontString cfg.font.family;
             dpi-aware = if cfg.dpiAware then "yes" else "no";
           };
       };

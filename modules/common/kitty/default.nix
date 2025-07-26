@@ -11,7 +11,6 @@ let
   cfg = config.module.kitty;
 
   defaultFontFamily = "MesloLGS NF";
-  defaultFontSize = 15.0;
   defaultOpacity = 1.0;
 
   defaultSettings = {
@@ -60,12 +59,6 @@ in
         description = "Font family for Kitty terminal";
       };
 
-      size = mkOption {
-        type = types.float;
-        default = defaultFontSize;
-        description = "Font size for Kitty terminal";
-      };
-
       package = mkOption {
         type = types.nullOr types.package;
         default = null;
@@ -104,7 +97,6 @@ in
       inherit (cfg) package;
       font = {
         name = cfg.font.family;
-        inherit (cfg.font) size;
       }
       // lib.optionalAttrs (cfg.font.package != null) {
         inherit (cfg.font) package;
