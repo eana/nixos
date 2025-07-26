@@ -109,19 +109,8 @@ in
   # Search for packages here: https://search.nixos.org/packages
   home = {
     packages = with pkgs; [
-      # SwayWM and Wayland Tools
-      grim # Screenshot utility for Wayland
-      imagemagick # Image manipulation tool
-      libnotify # Desktop notifications
-      mako # Notification daemon for Wayland
-      networkmanagerapplet # Network manager applet
-      slurp # Select a region in Wayland
-      swaybg # Wallpaper tool for Sway
-      swayidle # Idle management daemon for Sway
-
       # File Management
       gthumb # Image browser and viewer
-      nautilus # File manager
 
       # Media
       freetube # YouTube client
@@ -130,28 +119,9 @@ in
       aws-export-profile # AWS profile exporter
       gcc # GNU Compiler Collection
       gnumake # Build automation tool
-      go # Go programming language
-      gotools # Tools for Go programming
       meld # Visual diff and merge tool
       nil # Nix language server
-      nix-prefetch-git # Prefetch Git repositories
       nix-tree # Visualize Nix dependencies
-      tree-sitter # Incremental parsing system
-
-      # Language Servers and Linters
-      bash-language-server # Language server for Bash
-      black # Python code formatter
-      jsonnet-language-server # Language server for Jsonnet
-      lua-language-server # Language server for Lua
-      nodePackages.jsonlint # JSON linter
-      nodePackages.prettier # Code formatter
-      shellcheck # Shell script analysis tool
-      shfmt # Shell script formatter
-      stylua # An opinionated code formatter for Lua
-      terraform-ls # Language server for Terraform
-      tflint # Linter for Terraform
-      yaml-language-server # Language server for YAML
-      yamlfmt # YAML formatter
 
       # Containers
       podman # Tool for managing OCI containers
@@ -160,24 +130,10 @@ in
       cantarell-fonts # Cantarell font family
 
       # Other
-      # aider-chat # AI-powered code review tool
       awscli2 # AWS command-line interface
-      blueman # Bluetooth manager
-      brightnessctl # Utility to control brightness
-      copyq # Clipboard manager
-      earlyoom # Early OOM daemon
       fuse-emulator # ZX Spectrum emulator
       oath-toolkit # OATH one-time password tool
-      pavucontrol # PulseAudio volume control
-      playerctl # Media player controller
       protonvpn-cli_2 # ProtonVPN command-line interface
-      system-config-printer # Printer configuration tool
-
-      # Bitwarden
-      pinentry-tty # Pinentry for Bitwarden
-      rbw # Bitwarden CLI
-      rofi # Window switcher, application launcher, and dmenu replacement
-      rofi-rbw-wayland # Bitwarden integration for Rofi
     ];
 
     sessionVariables = {

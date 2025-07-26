@@ -12,6 +12,54 @@ let
 
   nvimConfigDir = ../../../assets/.config/nvim;
 
+  commonDeps = with pkgs; [
+    # Formatters
+    go
+    gopls
+    nixpkgs-fmt
+    nodePackages.prettier
+    terraform
+
+    # PDF and LaTeX tools
+    ghostscript
+    tectonic
+    texlive.combined.scheme-small
+
+    # Mermaid diagrams
+    nodePackages.mermaid-cli
+
+    # LazyGit
+    lazygit
+
+    # conform.nvim
+    gotools
+
+    # LuaRocks
+    luarocks
+
+    # fzf-lua
+    chafa
+    ueberzugpp
+    viu
+
+    # Mason dependencies
+    bash
+    gcc
+    gnutar
+    gzip
+    nodejs
+    python3
+    python3Packages.pip
+    unzip
+    wget
+
+    # Other tools
+    ast-grep
+    imagemagick
+    sqlite
+    tree-sitter
+  ];
+
 in
 {
   options.module.neovim = {
@@ -55,12 +103,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages =
-      with pkgs;
-      [
-        (lib.mkIf cfg.withNodeJs nodejs)
-      ]
-      ++ cfg.extraPackages;
+    home.packages = with pkgs; [ (lib.mkIf cfg.withNodeJs nodejs) ] ++ commonDeps ++ cfg.extraPackages;
 
     xdg.configFile."nvim" = {
       source = nvimConfigDir;
@@ -77,6 +120,8 @@ in
         ;
 
       inherit (cfg) extraConfig;
+
+      extraLuaPackages = ps: with ps; [ ];
     };
   };
 }

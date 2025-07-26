@@ -34,27 +34,15 @@
 
       # Development Tools
       fzf # Fuzzy finder
-      nixfmt-rfc-style # Nix code formatter
-      pre-commit # Framework for managing pre-commit hooks
       ripgrep # Search tool
 
       # Version Control
-      git-absorb # Automatically fixup commits
-      lazygit # Simple terminal UI for Git commands
       tig # Text-mode interface for Git
 
       # File and Text Manipulation
       glow # Markdown renderer for the terminal
       jaq # JSON processor
-      jq # Command-line JSON processor
       xh # Friendly and fast HTTP client
-
-      # Programming Languages and Runtimes
-      lua # Lua programming language
-      luajitPackages.luarocks # Package manager for Lua modules
-      luajitPackages.tiktoken_core # Tokenizer for Lua
-      nodejs_22 # JavaScript runtime
-      python3 # Python programming language
 
       # Diagramming Tools
       d2 # Modern diagram scripting language
@@ -62,8 +50,6 @@
       # Other
       firefox # Web browser
       google-chrome # Web browser
-      neofetch # System information tool
-      sops # Secrets management tool
       telegram-desktop # Telegram client
     ];
 
