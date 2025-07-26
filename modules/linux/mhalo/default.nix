@@ -8,9 +8,7 @@
 let
   inherit (lib) mkEnableOption mkOption types;
   cfg = config.module.mhalo;
-  mhaloPkg = pkgs.callPackage ./package.nix {
-    inherit (pkgs.qt6) wrapQtAppsHook;
-  };
+  mhaloPkg = pkgs.callPackage ./package.nix { inherit (pkgs.qt6) wrapQtAppsHook; };
 in
 {
   options.module.mhalo = {

@@ -10,9 +10,7 @@
         ../../../home/users/jonas/darwin.nix
         ../../../modules/common/default.nix
       ];
-      home.packages = [
-        pkgs.spotify
-      ];
+      home.packages = [ pkgs.spotify ];
       home.stateVersion = "24.05";
     };
   };

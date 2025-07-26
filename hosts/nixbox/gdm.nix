@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 let
   monitorsXmlContent = builtins.readFile ./monitors.xml;

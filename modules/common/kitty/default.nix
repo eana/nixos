@@ -102,10 +102,7 @@ in
         inherit (cfg.font) package;
       };
       settings = lib.recursiveUpdate defaultSettings (
-        cfg.settings
-        // {
-          background_opacity = toString cfg.opacity;
-        }
+        cfg.settings // { background_opacity = toString cfg.opacity; }
       );
       extraConfig = ''
         foreground ${cfg.colors.foreground}

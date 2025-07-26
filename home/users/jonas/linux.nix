@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 let
   theme = {
     package = pkgs.yaru-theme;
@@ -145,9 +142,7 @@ in
 
   module = {
     avizo.enable = true;
-    foot = {
-      enable = true;
-    };
+    foot.enable = true;
     fuzzel.enable = true;
     gammastep.enable = true;
     kanshi.enable = true;
