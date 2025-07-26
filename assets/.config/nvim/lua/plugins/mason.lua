@@ -8,6 +8,7 @@ return {
       "jsonlint",
       "jsonnet-language-server",
       "lua-language-server",
+      "nixfmt",
       "prettierd",
       "shellcheck",
       "shfmt",
